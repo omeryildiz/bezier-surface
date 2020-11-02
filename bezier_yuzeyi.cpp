@@ -41,9 +41,9 @@ GLfloat nRange = 10.0f;
    GLfloat Px =  7.0; GLfloat Py = 9.0; GLfloat Pz = -1.0;
 
 
-void Menu(int secenek){
-	if(secenek == 1)
-		cizgi = !cizgi;
+void Menu(int selection){
+	if(selection == 1)
+		line = !line;
 
 	glutPostRedisplay();
 
@@ -438,11 +438,3 @@ int main(int argc, char * argv[])
 	glutMainLoop();
 	return 0;
 }
-
-
-
-
-
-
-
-
