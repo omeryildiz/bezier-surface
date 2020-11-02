@@ -11,11 +11,11 @@ IDE		: Eclipse
 #include <cmath>
 #include <stdio.h>
 
-int cizgi = 0;
+int line = 0;
 static GLfloat xRot = 0.0f;
 static GLfloat zRot = 0.0f;
 static float Ww,Hh;
-float secme_araligi = 0.5;
+float selectionSpace = 0.5;
 mouse_t mouse;
 GLfloat nRange = 10.0f;
 
@@ -60,7 +60,7 @@ void displayFcn (void)
 	glRotatef(xRot, 1.0f, 0.0f, 0.0f);
 	glRotatef(zRot, 0.0f, 0.0f, 1.0f);
 
-	if(cizgi){
+	if(line){
 	glPolygonMode(GL_BACK,GL_LINE);
 	glPolygonMode(GL_FRONT,GL_LINE);
 	}
@@ -75,11 +75,11 @@ void displayFcn (void)
 
 
 
-    // detay, detaylandırmayı sağlamaktadır. Eğer 3 seçerseniz 4'e 4 bir yüzey çizer
-    int    detay = 3;
-    GLfloat degis = 1.0 / (GLfloat)detay;
+    // detail, detaillandırmayı sağlamaktadır. Eğer 3 seçerseniz 4'e 4 bir yüzey çizer
+    int    detail = 3;
+    GLfloat swapDetail = 1.0 / (GLfloat)detail;
 
-    // Köşeler (maksimum detay 20·20 )
+    // Köşeler (maksimum detail 20·20 )
     GLfloat Xv[21][21];
     GLfloat Yv[21][21];
     GLfloat Zv[21][21];
@@ -89,10 +89,10 @@ void displayFcn (void)
     GLfloat Yn[21][21];
     GLfloat Zn[21][21];
 
-    // detay 20'yi aşmamalı
-    if(detay > 20)
+    // detail 20'yi aşmamalı
+    if(detail > 20)
     {
-      detay = 20;
+      detail = 20;
     }
 
     //  Değişkenler
@@ -110,9 +110,9 @@ void displayFcn (void)
     GLfloat Ytc;
     GLfloat Ztc;
 
-    for(int i = 0; i <= detay; i++)
+    for(int i = 0; i <= detail; i++)
     {
-      for(int j = 0; j <= detay; j++)
+      for(int j = 0; j <= detail; j++)
       {
         // İlk köşeler
         Xv[i][j] = Ax*a*a*a*c*c*c   + Bx*3*a*a*a*c*c*d
@@ -213,27 +213,27 @@ void displayFcn (void)
 
 
         // normal vektörün uzunluğunu bul
-        GLfloat uzunluk = sqrt((Xn[i][j]*Xn[i][j])+(Yn[i][j]
+        GLfloat lengthVector = sqrt((Xn[i][j]*Xn[i][j])+(Yn[i][j]
                          *Yn[i][j])+(Zn[i][j]*Zn[i][j]));
 
         // Normalize et (ve sıfırla bölmeyi engelle)
-        if(uzunluk > 0)
+        if(lengthVector > 0)
         {
-          uzunluk = 1.0/uzunluk;
-          Xn[i][j] *= uzunluk;
+          lengthVector = 1.0/lengthVector;
+          Xn[i][j] *= lengthVector;
 
-          Yn[i][j] *= uzunluk;
+          Yn[i][j] *= lengthVector;
 
-          Zn[i][j] *= uzunluk;
+          Zn[i][j] *= lengthVector;
 
         }
 
         //döngü içinde c ve d değişimi
-        c -= degis;
+        c -= swapDetail;
         d  = 1.0 - c;
       }
       //a değişkeni döngü dışında değerleniyor
-      a -= degis;
+      a -= swapDetail;
       b  = 1.0 - a;
 
       // c değişkeni tekrar döngüye girmek için resetleniyor
@@ -254,10 +254,10 @@ void displayFcn (void)
 
 
     //Çizimin yapıldığı fonksiyon
-    for(int m = 0; m < detay; m++)
+    for(int m = 0; m < detail; m++)
     {
       glBegin(GL_TRIANGLE_STRIP);
-      for(int n = 0; n <= detay; n++)
+      for(int n = 0; n <= detail; n++)
       {
     	  //Normallerin çizimle alakası, sonraki noktanın doğrultusunu belirtiyor olmasıdır. Çizime katılmazlar.
         glNormal3d(Xn[m][n],Yn[m][n],Zn[m][n]);
@@ -336,67 +336,67 @@ void glutMotion(int x, int y)
 	y = (Hh/2-y)/nRange;
    mouse.SetOldPos(mouse.GetX(), mouse.GetY());
    mouse.SetNewPos(x, y);
-   if(mouse.GetOldX()>Ax-secme_araligi&&mouse.GetOldX()<Ax+secme_araligi&&mouse.GetOldY()>Ay-secme_araligi&&mouse.GetOldY()<Ay+secme_araligi ){
+   if(mouse.GetOldX()>Ax-selectionSpace&&mouse.GetOldX()<Ax+selectionSpace&&mouse.GetOldY()>Ay-selectionSpace&&mouse.GetOldY()<Ay+selectionSpace ){
   	   Ax = mouse.GetX();
   	   Ay = mouse.GetY();
      }
-   else if(mouse.GetOldX()>Bx-secme_araligi&&mouse.GetOldX()<Bx+secme_araligi&&mouse.GetOldY()>By-secme_araligi&&mouse.GetOldY()<By+secme_araligi ){
+   else if(mouse.GetOldX()>Bx-selectionSpace&&mouse.GetOldX()<Bx+selectionSpace&&mouse.GetOldY()>By-selectionSpace&&mouse.GetOldY()<By+selectionSpace ){
      	   Bx = mouse.GetX();
      	   By = mouse.GetY();
         }
-   else  if(mouse.GetOldX()>Cx-secme_araligi&&mouse.GetOldX()<Cx+secme_araligi&&mouse.GetOldY()>Cy-secme_araligi&&mouse.GetOldY()<Cy+secme_araligi ){
+   else  if(mouse.GetOldX()>Cx-selectionSpace&&mouse.GetOldX()<Cx+selectionSpace&&mouse.GetOldY()>Cy-selectionSpace&&mouse.GetOldY()<Cy+selectionSpace ){
   	   Cx = mouse.GetX();
      	   Cy = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Dx-secme_araligi&&mouse.GetOldX()<Dx+secme_araligi&&mouse.GetOldY()>Dy-secme_araligi&&mouse.GetOldY()<Dy+secme_araligi ){
+   else if(mouse.GetOldX()>Dx-selectionSpace&&mouse.GetOldX()<Dx+selectionSpace&&mouse.GetOldY()>Dy-selectionSpace&&mouse.GetOldY()<Dy+selectionSpace ){
      	   Dx = mouse.GetX();
      	   Dy = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Ex-secme_araligi&&mouse.GetOldX()<Ex+secme_araligi&&mouse.GetOldY()>Ey-secme_araligi&&mouse.GetOldY()<Ey+secme_araligi ){
+   else if(mouse.GetOldX()>Ex-selectionSpace&&mouse.GetOldX()<Ex+selectionSpace&&mouse.GetOldY()>Ey-selectionSpace&&mouse.GetOldY()<Ey+selectionSpace ){
      	   Ex = mouse.GetX();
      	   Ey = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Fx-secme_araligi&&mouse.GetOldX()<Fx+secme_araligi&&mouse.GetOldY()>Fy-secme_araligi&&mouse.GetOldY()<Fy+secme_araligi ){
+   else if(mouse.GetOldX()>Fx-selectionSpace&&mouse.GetOldX()<Fx+selectionSpace&&mouse.GetOldY()>Fy-selectionSpace&&mouse.GetOldY()<Fy+selectionSpace ){
      	   Fx = mouse.GetX();
      	   Fy = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Gx-secme_araligi&&mouse.GetOldX()<Gx+secme_araligi&&mouse.GetOldY()>Gy-secme_araligi&&mouse.GetOldY()<Gy+secme_araligi ){
+   else if(mouse.GetOldX()>Gx-selectionSpace&&mouse.GetOldX()<Gx+selectionSpace&&mouse.GetOldY()>Gy-selectionSpace&&mouse.GetOldY()<Gy+selectionSpace ){
      	   Gx = mouse.GetX();
      	   Gy = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Hx-secme_araligi&&mouse.GetOldX()<Hx+secme_araligi&&mouse.GetOldY()>Hy-secme_araligi&&mouse.GetOldY()<Hy+secme_araligi ){
+   else if(mouse.GetOldX()>Hx-selectionSpace&&mouse.GetOldX()<Hx+selectionSpace&&mouse.GetOldY()>Hy-selectionSpace&&mouse.GetOldY()<Hy+selectionSpace ){
      	   Hx = mouse.GetX();
      	   Hy = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Ix-secme_araligi&&mouse.GetOldX()<Ix+secme_araligi&&mouse.GetOldY()>Iy-secme_araligi&&mouse.GetOldY()<Iy+secme_araligi ){
+   else if(mouse.GetOldX()>Ix-selectionSpace&&mouse.GetOldX()<Ix+selectionSpace&&mouse.GetOldY()>Iy-selectionSpace&&mouse.GetOldY()<Iy+selectionSpace ){
      	   Ix = mouse.GetX();
      	   Iy = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Jx-secme_araligi&&mouse.GetOldX()<Jx+secme_araligi&&mouse.GetOldY()>Jy-secme_araligi&&mouse.GetOldY()<Jy+secme_araligi ){
+   else if(mouse.GetOldX()>Jx-selectionSpace&&mouse.GetOldX()<Jx+selectionSpace&&mouse.GetOldY()>Jy-selectionSpace&&mouse.GetOldY()<Jy+selectionSpace ){
      	   Jx = mouse.GetX();
      	   Jy = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Kx-secme_araligi&&mouse.GetOldX()<Kx+secme_araligi&&mouse.GetOldY()>Ky-secme_araligi&&mouse.GetOldY()<Ky+secme_araligi ){
+   else if(mouse.GetOldX()>Kx-selectionSpace&&mouse.GetOldX()<Kx+selectionSpace&&mouse.GetOldY()>Ky-selectionSpace&&mouse.GetOldY()<Ky+selectionSpace ){
      	   Kx = mouse.GetX();
      	   Ky = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Lx-secme_araligi&&mouse.GetOldX()<Lx+secme_araligi&&mouse.GetOldY()>Ly-secme_araligi&&mouse.GetOldY()<Ly+secme_araligi ){
+   else if(mouse.GetOldX()>Lx-selectionSpace&&mouse.GetOldX()<Lx+selectionSpace&&mouse.GetOldY()>Ly-selectionSpace&&mouse.GetOldY()<Ly+selectionSpace ){
      	   Lx = mouse.GetX();
      	   Ly = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Mx-secme_araligi&&mouse.GetOldX()<Mx+secme_araligi&&mouse.GetOldY()>My-secme_araligi&&mouse.GetOldY()<My+secme_araligi ){
+   else if(mouse.GetOldX()>Mx-selectionSpace&&mouse.GetOldX()<Mx+selectionSpace&&mouse.GetOldY()>My-selectionSpace&&mouse.GetOldY()<My+selectionSpace ){
      	   Mx = mouse.GetX();
      	   My = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Nx-secme_araligi&&mouse.GetOldX()<Nx+secme_araligi&&mouse.GetOldY()>Ny-secme_araligi&&mouse.GetOldY()<Ny+secme_araligi ){
+   else if(mouse.GetOldX()>Nx-selectionSpace&&mouse.GetOldX()<Nx+selectionSpace&&mouse.GetOldY()>Ny-selectionSpace&&mouse.GetOldY()<Ny+selectionSpace ){
      	   Nx = mouse.GetX();
      	   Ny = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Ox-secme_araligi&&mouse.GetOldX()<Ox+secme_araligi&&mouse.GetOldY()>Oy-secme_araligi&&mouse.GetOldY()<Oy+secme_araligi ){
+   else if(mouse.GetOldX()>Ox-selectionSpace&&mouse.GetOldX()<Ox+selectionSpace&&mouse.GetOldY()>Oy-selectionSpace&&mouse.GetOldY()<Oy+selectionSpace ){
      	   Ox = mouse.GetX();
      	   Oy = mouse.GetY();
         }
-   else if(mouse.GetOldX()>Px-secme_araligi&&mouse.GetOldX()<Px+secme_araligi&&mouse.GetOldY()>Py-secme_araligi&&mouse.GetOldY()<Py+secme_araligi ){
+   else if(mouse.GetOldX()>Px-selectionSpace&&mouse.GetOldX()<Px+selectionSpace&&mouse.GetOldY()>Py-selectionSpace&&mouse.GetOldY()<Py+selectionSpace ){
      	   Px = mouse.GetX();
      	   Py = mouse.GetY();
         }
